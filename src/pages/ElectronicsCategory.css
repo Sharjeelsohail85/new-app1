@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@500;700&display=swap');
+
+/*
+  “Parallax Depth Cards” (andymerskin / XNMWvQ) styling port.
+  Scoped to this page so it won't impact other pages.
+*/
+
+.electronics-page {
+  --pdc-hover-easing: cubic-bezier(0.23, 1, 0.32, 1);
+  --pdc-return-easing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+
+  height: 100vh;
+  overflow: auto;
+  background-color: #bcaaa4;
+  color: #5d4037;
+  -webkit-font-smoothing: antialiased;
+
+  font-family: 'Raleway', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.electronics-page__header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.1rem;
+  background: rgba(188, 170, 164, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(93, 64, 55, 0.18);
+}
+
+.electronics-page__back {
+  border: 1px solid rgba(93, 64, 55, 0.28);
+  background: rgba(255, 255, 255, 0.22);
+  color: #5d4037;
+  border-radius: 12px;
+  padding: 0.55rem 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.electronics-page__back:hover {
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.electronics-page__titles {
+  min-width: 0;
+}
+
+.pdc-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.electronics-page__subtitle {
+  margin: 0.25rem 0 0;
+  color: rgba(93, 64, 55, 0.8);
+}
+
+.electronics-page__content {
+  padding: 1.25rem 1rem 2.4rem;
+}
+
+.pdc-container {
+  padding: 40px 80px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pdc-card-wrap {
+  --pdc-rx: 0deg;
+  --pdc-ry: 0deg;
+  --pdc-tx: 0px;
+  --pdc-ty: 0px;
+
+  margin: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  transform: perspective(800px);
+  transform-style: preserve-3d;
+  text-align: left;
+}
+
+.pdc-card-wrap:focus-visible {
+  outline: 3px solid rgba(93, 64, 55, 0.65);
+  outline-offset: 6px;
+  border-radius: 14px;
+}
+
+.pdc-card {
+  position: relative;
+  width: 240px;
+  height: 320px;
+  background-color: #333;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.66) 0 30px 60px 0, inset #333 0 0 0 5px,
+    inset rgba(255, 255, 255, 0.5) 0 0 0 6px;
+  transition: 1s var(--pdc-return-easing);
+  transform: rotateY(var(--pdc-rx)) rotateX(var(--pdc-ry));
+  transform-style: preserve-3d;
+}
+
+.pdc-card-bg {
+  opacity: 0.5;
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  transition: 1s var(--pdc-return-easing), opacity 5s 1s var(--pdc-return-easing);
+  pointer-events: none;
+  transform: translateX(var(--pdc-tx)) translateY(var(--pdc-ty));
+}
+
+.pdc-card-info {
+  padding: 20px;
+  position: absolute;
+  bottom: 0;
+  color: #fff;
+  transform: translateY(40%);
+  transition: 0.6s 1.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.pdc-card-info p {
+  opacity: 0;
+  margin: 10px 0 0;
+  text-shadow: rgba(0, 0, 0, 1) 0 2px 3px;
+  transition: 0.6s 1.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.pdc-card-info * {
+  position: relative;
+  z-index: 1;
+}
+
+.pdc-card-info::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+  background-blend-mode: overlay;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: 5s 1s var(--pdc-return-easing);
+}
+
+.pdc-card-info h2 {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: 34px;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: rgba(0, 0, 0, 0.5) 0 10px 10px;
+}
+
+.pdc-card-wrap:hover .pdc-card-info {
+  transform: translateY(0);
+}
+
+.pdc-card-wrap:hover .pdc-card-info p {
+  opacity: 1;
+}
+
+.pdc-card-wrap:hover .pdc-card-info,
+.pdc-card-wrap:hover .pdc-card-info p {
+  transition: 0.6s var(--pdc-hover-easing);
+}
+
+.pdc-card-wrap:hover .pdc-card-info::after {
+  transition: 5s var(--pdc-hover-easing);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pdc-card-wrap:hover .pdc-card-bg {
+  transition: 0.6s var(--pdc-hover-easing), opacity 5s var(--pdc-hover-easing);
+  opacity: 0.8;
+}
+
+.pdc-card-wrap:hover .pdc-card {
+  transition: 0.6s var(--pdc-hover-easing), box-shadow 2s var(--pdc-hover-easing);
+  box-shadow: rgba(255, 255, 255, 0.2) 0 0 40px 5px, rgba(255, 255, 255, 1) 0 0 0 1px,
+    rgba(0, 0, 0, 0.66) 0 30px 60px 0, inset #333 0 0 0 5px, inset #fff 0 0 0 6px;
+}
+
+.pdc-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@media (max-width: 900px) {
+  .pdc-container {
+    padding: 28px 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdc-card,
+  .pdc-card-bg,
+  .pdc-card-info,
+  .pdc-card-info p {
+    transition: none !important;
+  }
+}
+

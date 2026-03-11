@@ -14,3 +14,19 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+---
+
+## Salt category page
+
+Clicking **Salt** on the home page opens a “Parallax Depth Cards”-inspired salt options page.
+
+### Required images
+
+Place the 3 provided images into [`public/`](public:1) with these filenames:
+
+- `public/salt-option-1.jpg` (Asthma – Salt Therapy)
+- `public/salt-option-2.jpg` (Edible Salt)
+- `public/salt-option-3.jpg` (Salt Decor)
+
+If any image is missing, the card still renders (it falls back to the gradient background).
