@@ -71,7 +71,7 @@ export default function FlightsCategory({ onBack }) {
         key: 'flights',
         title: 'Flights',
         subtitle: 'Compare routes and fares to book faster.',
-        imageSrc: '/slide-2-travel.jpg',
+        imageSrc: '/slide-2-travel.png',
       },
       {
         key: 'hotels',

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+
 .parallax-page {
   position: relative;
   width: 100%;
@@ -5,187 +7,180 @@
   color: #ffffff;
 }
 
+/*
+  Keith Clark (codepen ndEygj) pure CSS parallax technique:
+  perspective: 1px + translateZ() layers. Adapted to scroll within .parallax.
+  Source reference: C:\Users\Sharjeel\Downloads\pure-css-parallax-scrolling\pure-css-parallax-scrolling\src\style.css
+*/
 .parallax {
   height: 100vh;
+  overflow-y: scroll;
   overflow-x: hidden;
-  overflow-y: auto;
-  /* Keith Clark (codepen ndEygj) style: 1px perspective + 3D layers */
   perspective: 1px;
-  perspective-origin: center center;
   transform-style: preserve-3d;
-  scroll-snap-type: none;
-  scroll-behavior: smooth;
-
-  /* Hint the browser to prefer crisp resampling during scroll/compositing. */
-  -webkit-font-smoothing: antialiased;
+  font-family: Nunito, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
 .parallax__group {
   position: relative;
-  /* Codepen style: each group is one viewport tall */
   height: 100vh;
-  min-height: 100vh;
-  transform-style: preserve-3d;
-  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.7);
+  transform-style: inherit;
+  /* Keep each slide's background/overlay stacking contained. */
   isolation: isolate;
+
+  /*
+    Ensure the white content card is always placed clearly within the viewport.
+    (Avoids the old 25vh padding pushing it into awkward positions.)
+  */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 clamp(1.25rem, 6vw, 10%);
 }
 
-.parallax__layer {
+/* Parallax background layer (moves slower than content while scrolling). */
+.parallax__group::before {
+  content: '';
   position: absolute;
   inset: 0;
-}
-
-/* Optional: allow a layer to use CSS background-image instead of <img>. */
-.parallax__bg {
-  position: absolute;
-  inset: 0;
+  /*
+    Show the full image (contain) while still filling the slide (cover behind it).
+    This avoids awkward cropping while keeping the viewport filled.
+  */
+  background-color: #050816;
   background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-}
-
-/* Fragrance background: provide responsive/resolution-aware images. */
-.parallax__bg--fragrance {
-  background-image: image-set(
-    url('/slide-4-fragrance.jpg') 1x,
-    url('/slide-4-fragrance@2x.jpg') 2x,
-    url('/slide-4-fragrance@3x.jpg') 3x
-  );
-
-  /* Portrait photo: keep product centered. */
-  background-position: center 62%;
-}
-
-/* Ensure the back layer image is never constrained by intrinsic size quirks */
-.parallax__layer--back img {
-  max-width: none;
-}
-
-.parallax__layer--back {
-  /* Codepen baseline: translate back in Z and scale to fill */
-  transform: translateZ(-1px) scale(2);
-  transform-origin: center;
-  display: grid;
-  place-items: center;
+  background-position: var(--slide-bg-position, center);
+  background-size: var(--slide-bg-size, cover);
+  background-image: var(--slide-bg);
+  /*
+    Default keeps the parallax effect. For slides that should show the FULL image
+    (no zoom/crop), we can override this to `none` via --slide-bg-transform.
+  */
+  transform: var(--slide-bg-transform, translateZ(-1px) scale(2));
+  transform-origin: 50% 50%;
   will-change: transform;
-  backface-visibility: hidden;
   z-index: 0;
 }
 
-/*
-  The fragrance image is relatively low-resolution compared to large desktops.
-  Reduce its parallax depth so the browser doesn't need to upscale it as aggressively
-  (upscaling is the main cause of “not clear”).
-*/
-.parallax__group[data-slide='slide-4'] .parallax__layer--back {
-  /* Reduce depth/scale (vs -1px/2x) to keep the portrait image sharper while still parallaxing. */
-  transform: translateZ(-0.4px) scale(1.4);
-}
-
-.parallax__image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  /* Let the layer handle transforms; keep the image itself un-transformed for crispness. */
-  transform: none;
-  filter: none;
-}
-
-/* Fragrance: portrait framing tweak so the bottle/label stays in view on wide screens. */
-.parallax__image--fragrance {
-  /* New uploaded image is wider; frame a bit higher so the bottle stays centered. */
-  object-position: center 50%;
-  image-rendering: -webkit-optimize-contrast;
-}
-
-/* Fragrance slide: slightly brighter + different framing + minimal zoom. */
-
-/* Fragrance: show a crisp, correctly-sized product image in the content layer too. */
-.slide-content--with-image {
-  display: grid;
-  gap: 1rem;
-  justify-items: center;
-}
-
-.slide-hero {
-  width: min(88vw, 520px);
-  height: auto;
-  border-radius: 16px;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
-}
-
-.parallax__layer--back::after {
+/* Subtle overlay to improve readability of the content card across images. */
+.parallax__group::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  /* Lighter overlay so the image reads sharper/clearer. */
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(8, 14, 29, 0.6));
-}
-
-/* Fragrance slide: keep overlay a touch lighter so product details read better. */
-.parallax__group[data-slide='slide-4'] .parallax__layer--back::after {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.03), rgba(8, 14, 29, 0.5));
-}
-
-.parallax__layer--base {
-  position: relative;
-  transform: translateZ(0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.25rem;
-  z-index: 2;
+  /* NOTE: must sit BELOW the content card for readability. */
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.42));
+  z-index: 1;
 }
 
 .slide-content {
-  width: min(92vw, 760px);
+  position: relative;
+  z-index: 2;
+  width: min(92vw, 820px);
+  /* Bigger card for clearer readability (requested). */
+  min-height: clamp(320px, 42vh, 560px);
+  max-height: 84vh;
+  padding: clamp(1.6rem, 3.2vw, 3rem);
+  border-radius: 10px;
+  background: rgba(245, 240, 235, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.65);
+  color: #151515;
   text-align: center;
-  padding: 2.25rem 1.5rem;
-  border-radius: 18px;
-  background: rgba(5, 12, 28, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  overflow: hidden;
 }
 
-/* Add a bit of decorative emphasis for the Fragrance slide title to match others visually */
-.parallax__group[data-slide='slide-4'] .slide-content h1 {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+/*
+  Center the card on all slides for consistent visibility.
+  (The alternating layout looked good in the original pen, but it risks clipping on some viewports.)
+*/
+.parallax__group .slide-content {
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.parallax__group[data-slide='slide-4'] .slide-content h1::after {
-  content: '';
-  display: block;
-  width: 74px;
-  height: 3px;
-  margin: 0.85rem auto 0;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(216, 232, 255, 0.95), rgba(255, 255, 255, 0));
+.slide-content:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55), 0 0 14px rgba(0, 0, 0, 0.65);
 }
 
 .slide-content h1 {
   margin: 0;
-  font-size: clamp(2rem, 7.5vw, 4.6rem);
+  font-size: clamp(2.1rem, 6vw, 3.6rem);
   font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  line-height: 1.05;
 }
 
 .slide-content p {
-  margin: 0.85rem 0 0;
-  font-size: clamp(1rem, 2.8vw, 1.35rem);
-  color: rgba(255, 255, 255, 0.88);
+  margin: 0.9rem 0 0;
+  font-size: clamp(1rem, 2.6vw, 1.25rem);
+  line-height: 1.5;
+  color: rgba(20, 20, 20, 0.86);
+  max-width: 56ch;
 }
 
 .slide-content__hint {
-  margin-top: 0.9rem;
-  font-size: 0.95rem;
-  color: rgba(216, 232, 255, 0.86);
+  margin-top: 0.95rem;
+  display: inline-block;
+  width: fit-content;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: rgba(0, 0, 0, 0.06);
+
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  color: rgba(20, 20, 20, 0.7);
+}
+
+@media (max-width: 900px) {
+  .parallax__group {
+    padding: 0 1rem;
+  }
+
+  .slide-content {
+    width: 100%;
+    min-height: clamp(260px, 34vh, 460px);
+    max-height: 86vh;
+    padding: 1.35rem 1.15rem;
+    /* Center on small screens for consistent visibility. */
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Very short viewports (small laptops / mobile landscape): keep the full card visible. */
+@media (max-height: 650px) {
+  .slide-content {
+    min-height: 240px;
+    max-height: 78vh;
+    padding: 1.15rem 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax {
+    perspective: none;
+  }
+
+  .parallax__group::before {
+    transform: none;
+    will-change: auto;
+  }
 }
 
 .sidebar-toggle {
@@ -290,24 +285,6 @@
 }
 
 @media (max-width: 580px) {
-  .parallax {
-    /* Keep groups as 1 viewport tall (codepen behavior) */
-    height: 100vh;
-  }
-
-  .parallax__group {
-    height: 100vh;
-    min-height: 100vh;
-  }
-
-  .parallax__image {
-    height: 100%;
-  }
-
-  .slide-content {
-    padding: 1.8rem 1.1rem;
-  }
-
   .sidebar {
     width: 230px;
     left: -230px;

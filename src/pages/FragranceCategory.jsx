@@ -125,6 +125,18 @@ export default function FragranceCategory({ onBack }) {
         description: 'Cool minty freshness with a clean, icy edge.',
         imageSrc: '/fragrance-option-4.jpg',
       },
+      {
+        key: 'miracle',
+        title: 'Miracle',
+        description: 'Fruity brightness with a warm amber finish.',
+        imageSrc: '/fragrance-option-5.png',
+      },
+      {
+        key: 'frosted-botanical',
+        title: 'Frosted (Botanical)',
+        description: 'Fresh green notes with soft, elegant warmth.',
+        imageSrc: '/fragrance-option-6.jpg',
+      },
     ],
     [],
   )
